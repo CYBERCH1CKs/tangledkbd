@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Tangled kaebedo i'm insane</title>
+  <link href="style.css" rel="stylesheet" type="text/css" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script type="text/javascript">
+// <![CDATA[
+var speed=25; // how fast - smaller is faster
+var how_often=10; // average time between re-appearances of a comet (in seconds)
+var how_many=10; // maximum number of comets in flight
+var colours=new Array("#ff0", "#f93", "#f60", "#e93", "#e94", "#da5", "#da6", "#cb7", "#cb8", "#cc9", "#dcb", "#ddd");  
+// above line lists colours for the comet and its tail (can be as long or short as you like)
+
+/****************************
+* Shooting Star/Comet Effect*
+*(c)2008-13 mf2fm web-design*
+*  http://www.mf2fm.com/rv  *
+* DON'T EDIT BELOW THIS BOX *
+****************************/
+
+var dx=new Array();
+var dy=new Array();
+var xpos=new Array();
+var ypos=new Array();
+var comets=new Array();
+var swide=800;
+var shigh=600;
+var tail=colours.length;
+var boddie=false;
+
+function addLoadEvent(funky) {
+  var oldonload=window.onload;
+  if (typeof(oldonload)!='function') window.onload=funky;
+  else window.onload=function() {
+    if (oldonload) oldonload();
+    funky();
+  }
+}
+
+addLoadEvent(whooosh);
+
+function whooosh() { if (document.getElementById) {
+  var i;
+  boddie=document.createElement("div");
+  boddie.style.position="fixed";
+  boddie.style.top="0px";
+  boddie.style.left="0px";
+  boddie.style.overflow="visible";
+  boddie.style.width="1px";
+  boddie.style.height="1px";
+  boddie.style.backgroundColor="transparent";
+  document.body.appendChild(boddie);
+  set_width();
+  for (i=0; i<how_many; i++) {
+    write_comet(i*tail);
+	setTimeout('launch('+(i*tail)+')', Math.max(1000*i));
+  }
+}}
+
+function write_comet(a) {
+  var i, s;
+  for (i=0; i<tail; i++) {
+    s=2+(i<tail/4)+2*!i;
+	comets[i+a]=div(s, s);
+	comets[i+a].style.backgroundColor=colours[i];
+	boddie.appendChild(comets[i+a]);
+  }
+}
+
+function div(w, h) {
+  var d=document.createElement("div");
+  d.style.position="absolute";
+  d.style.overflow="hidden";
+  d.style.width=w+"px";
+  d.style.height=h+"px";
+  return (d);
+}
+
+function stepthrough(a) { 
+  var i;
+  if (Math.random()<0.008||ypos[a]+dy[a]<5||xpos[a]+dx[a]<5||xpos[a]+dx[a]>=swide-5||ypos[a]+dy[a]>=shigh-5) {
+	for (i=0; i<tail; i++) setTimeout('comets['+(i+a)+'].style.visibility="hidden"', speed*(tail-i));
+	setTimeout('launch('+a+')', Math.max(1000, 2000*Math.random()*how_often));
+  }
+  else setTimeout('stepthrough('+a+')', speed);
+  for (i=tail-1; i>=0; i--) {
+	if (i) {
+      xpos[i+a]=xpos[i+a-1];
+      ypos[i+a]=ypos[i+a-1];
+	}
+	else {
+	  xpos[i+a]+=dx[a];
+      ypos[i+a]+=dy[a];
+	}
+    comets[i+a].style.left=xpos[i+a]+"px";
+    comets[i+a].style.top=ypos[i+a]+"px";
+  }
+} 
+
+function launch(a) {
+  var i;
+  dx[a]=(Math.random()>0.5?1:-1)*(1+Math.random()*3);
+  dy[a]=(Math.random()>0.5?1:-1)*((7-dx[a])/3+Math.random()*(dx[a]+5)/3);
+  xpos[a]=2*tail*dx[a]+Math.round(Math.random()*(swide-4*tail*dx[a]));
+  ypos[a]=2*tail*dy[a]+Math.round(Math.random()*(shigh-4*tail*dy[a]));
+  for (i=0; i<tail; i++) {
+    xpos[i+a]=xpos[a];
+    ypos[i+a]=ypos[a];
+	comets[i+a].style.visibility="visible";
+  }
+  stepthrough(a);
+}
+
+window.onresize=set_width;
+function set_width() {
+  var sw_min=999999;
+  var sh_min=999999;
+  if (document.documentElement && document.documentElement.clientWidth) {
+    if (document.documentElement.clientWidth>0) sw_min=document.documentElement.clientWidth;
+    if (document.documentElement.clientHeight>0) sh_min=document.documentElement.clientHeight;
+  }
+  if (typeof(self.innerWidth)!="undefined" && self.innerWidth) {
+    if (self.innerWidth>0 && self.innerWidth<sw_min) sw_min=self.innerWidth;
+    if (self.innerHeight>0 && self.innerHeight<sh_min) sh_min=self.innerHeight;
+  }
+  if (document.body.clientWidth) {
+    if (document.body.clientWidth>0 && document.body.clientWidth<sw_min) sw_min=document.body.clientWidth;
+    if (document.body.clientHeight>0 && document.body.clientHeight<sh_min) sh_min=document.body.clientHeight;
+  }
+  if (sw_min==999999 || sh_min==999999) {
+    sw_min=800;
+    sh_min=600;
+  }
+  swide=sw_min;
+  shigh=sh_min;
+}
+// ]]>
+</script>
+  <script type="text/javascript">
+// <![CDATA[
+var colours=new Array('purple', 'gold', '#008AB7', '#f6f', '#f39', '#f9c'); // colours of the hearts
+var minisize=16; // smallest size of hearts in pixels
+var maxisize=28; // biggest size of hearts in pixels
+var hearts=66; // maximum number of hearts on screen
+var over_or_under="over"; // set to "over" for hearts to always be on top, or "under" to allow them to float behind other objects
+
+/*****************************
+*JavaScript Love Heart Cursor*
+*  (c)2013+ mf2fm web-design *
+*   http://www.mf2fm.com/rv  *
+*  DON'T EDIT BELOW THIS BOX *
+*****************************/
+var x=ox=400;
+var y=oy=300;
+var swide=800;
+var shigh=600;
+var sleft=sdown=0;
+var herz=new Array();
+var herzx=new Array();
+var herzy=new Array();
+var herzs=new Array();
+var kiss=false;
+
+if (typeof('addRVLoadEvent')!='function') function addRVLoadEvent(funky) {
+  var oldonload=window.onload;
+  if (typeof(oldonload)!='function') window.onload=funky;
+  else window.onload=function() {
+    if (oldonload) oldonload();
+    funky();
+  }
+}
+
+addRVLoadEvent(mwah);
+
+function mwah() { if (document.getElementById) {
+  var i, heart;
+  for (i=0; i<hearts; i++) {
+    heart=createDiv("auto", "auto");
+    heart.style.visibility="hidden";
+	heart.style.zIndex=(over_or_under=="over")?"1001":"0";
+    heart.style.color=colours[i%colours.length];
+	heart.style.pointerEvents="none";
+    if (navigator.appName=="Microsoft Internet Explorer") heart.style.filter="alpha(opacity=75)";
+    else heart.style.opacity=0.75;
+    heart.appendChild(document.createTextNode(String.fromCharCode(9829)));
+    document.body.appendChild(heart);
+    herz[i]=heart;
+	herzy[i]=false;
+  }
+  set_scroll();
+  set_width();
+  herzle();
+}}
+
+function herzle() {
+  var c;
+  if (Math.abs(x-ox)>1 || Math.abs(y-oy)>1) {
+    ox=x;
+    oy=y;
+    for (c=0; c<hearts; c++) if (herzy[c]===false) {
+	  herz[c].firstChild.nodeValue=String.fromCharCode(9829);
+      herz[c].style.left=(herzx[c]=x-minisize/2)+"px";
+      herz[c].style.top=(herzy[c]=y-minisize)+"px";
+      herz[c].style.fontSize=minisize+"px";
+	  herz[c].style.fontWeight='normal';
+      herz[c].style.visibility='visible';
+      herzs[c]=minisize;
+      break;
+    }
+  }
+  for (c=0; c<hearts; c++) if (herzy[c]!==false) blow_me_a_kiss(c);
+  setTimeout("herzle()", 40);
+}
+
+document.onmousedown=pucker;
+document.onmouseup=function(){clearTimeout(kiss);};
+
+function pucker() {
+  ox=-1;
+  oy=-1;
+  kiss=setTimeout('pucker()', 100);
+}
+
+function blow_me_a_kiss(i) {
+  herzy[i]-=herzs[i]/minisize+i%2;
+  herzx[i]+=(i%5-2)/5;
+  if (herzy[i]<sdown-herzs[i] || herzx[i]<sleft-herzs[i] || herzx[i]>sleft+swide-herzs[i]) {
+    herz[i].style.visibility="hidden";
+    herzy[i]=false;
+  }
+  else if (herzs[i]>minisize+2 && Math.random()<.5/hearts) break_my_heart(i);
+  else {
+    if (Math.random()<maxisize/herzy[i] && herzs[i]<maxisize) herz[i].style.fontSize=(++herzs[i])+"px";
+    herz[i].style.top=herzy[i]+"px";
+    herz[i].style.left=herzx[i]+"px";
+  }
+}
+
+function break_my_heart(i) {
+  var t;
+  herz[i].firstChild.nodeValue=String.fromCharCode(9676);
+  herz[i].style.fontWeight='bold';
+  herzy[i]=false;
+  for (t=herzs[i]; t<=maxisize; t++) setTimeout('herz['+i+'].style.fontSize="'+t+'px"', 60*(t-herzs[i]));
+  setTimeout('herz['+i+'].style.visibility="hidden";', 60*(t-herzs[i]));
+}
+
+document.onmousemove=mouse;
+function mouse(e) {
+  if (e) {
+    y=e.pageY;
+    x=e.pageX;
+  }
+  else {
+    set_scroll();
+    y=event.y+sdown;
+    x=event.x+sleft;
+  }
+}
+
+window.onresize=set_width;
+function set_width() {
+  var sw_min=999999;
+  var sh_min=999999;
+  if (document.documentElement && document.documentElement.clientWidth) {
+    if (document.documentElement.clientWidth>0) sw_min=document.documentElement.clientWidth;
+    if (document.documentElement.clientHeight>0) sh_min=document.documentElement.clientHeight;
+  }
+  if (typeof(self.innerWidth)=='number' && self.innerWidth) {
+    if (self.innerWidth>0 && self.innerWidth<sw_min) sw_min=self.innerWidth;
+    if (self.innerHeight>0 && self.innerHeight<sh_min) sh_min=self.innerHeight;
+  }
+  if (document.body.clientWidth) {
+    if (document.body.clientWidth>0 && document.body.clientWidth<sw_min) sw_min=document.body.clientWidth;
+    if (document.body.clientHeight>0 && document.body.clientHeight<sh_min) sh_min=document.body.clientHeight;
+  }
+  if (sw_min==999999 || sh_min==999999) {
+    sw_min=800;
+    sh_min=600;
+  }
+  swide=sw_min;
+  shigh=sh_min;
+}
+
+window.onscroll=set_scroll;
+function set_scroll() {
+  if (typeof(self.pageYOffset)=='number') {
+    sdown=self.pageYOffset;
+    sleft=self.pageXOffset;
+  }
+  else if (document.body && (document.body.scrollTop || document.body.scrollLeft)) {
+    sdown=document.body.scrollTop;
+    sleft=document.body.scrollLeft;
+  }
+  else if (document.documentElement && (document.documentElement.scrollTop || document.documentElement.scrollLeft)) {
+    sleft=document.documentElement.scrollLeft;
+    sdown=document.documentElement.scrollTop;
+  }
+  else {
+    sdown=0;
+    sleft=0;
+  }
+}
+
+function createDiv(height, width) {
+  var div=document.createElement("div");
+  div.style.position="absolute";
+  div.style.height=height;
+  div.style.width=width;
+  div.style.overflow="hidden";
+  div.style.backgroundColor="transparent";
+  return (div);
+}
+// ]]>
+</script>
+</head>
+<body> 
+<div>
+  <h1>What if i told you</h1>
+  <h3> Eugene and rapunzel from tangled are basically kaeya and albedo from Mental Illness</h3>
+  <h6> Derangment ahead</h6>
+  <h4>Spoiler warning for rapunzel's tangled adventure if you care btw</h4>
+  <p1>Rapunzel is soooo albedo core</p1>
+  <p>Limited prior social experience. Loves to paint. Loves to learn. Smart. Cooks and bakes. Blonde. Just good at fixing things. Vastly stronger than appearances would imply. Good at everything tbh. A fixer. Was sheltered alone with one so-called guardian for the entirety of their growing up. Loves desserts. That one time when she charted the stars for months to prove a point. The other time when she stayed up all night pinning things to a board and refused to go to sleep until she figured it out.</p>
+  <p2>flynn Or Should I Say Eugene is similarly soooo kaeya core</p2>
+  <p>Tricky man. Got an ego. Tiny little soft spot for blondie. Tragic orphan backstory. Knows people. Hot. Loves to take children that remind him of his childhood self under his wing. Flips coins. Secretly a prince from a corrupted civilization and was abandoned by said royal family as a child. <a href="https://disney.fandom.com/wiki/Flynn_Rider#cite_ref-1"> No seriously.</a> Enjoys wearing unbuttoned white shirts. Captain.</p>
+</div>
+  <p></p>
+  <script>
+    function link(url){
+    var url = url;
+    var win = window.open(url, '_blank');
+    win.focus();
+    }
+  </script>
+  <button onclick="link('https://www.youtube.com/watch?v=e2JEweN_HjA')"> Find Enlightenment Today!</button>
+<!--   <button class="enlighten">Find Enlightenment Today!</button> -->
+  <p></p>
+  <img src="http://2.bp.blogspot.com/-fe2V_yT-46Q/UyWIRzZFq9I/AAAAAAAAABs/amYyY4eE0OM/s1600/Untitled.png"
+    alt="Rapunzel holding a frying pan in Flynn's face threateningly as he is tied up in a chair by her hair">
+  <h6>^^^Albedo would do this!!!^^^</h6>
+  
+  <script src="script.js"></script>
+
+ <!--
+This script places a badge on your repl's full-browser view back to your repl's cover page. Try various colors for the theme: dark, light, red, orange, yellow, lime, green, teal, blue, blurple, magenta, pink!
+
+<script src="https://replit.com/public/js/replit-badge.js" theme="blue" defer></script> -->
+</body>
+
+</html>
