@@ -1,0 +1,40 @@
+html, body {
+  height: 100%;
+  width: 100%;
+  background-color: #FAECFD;
+  text-align: center;
+}
+img{
+  height:33%;
+  width: auto;
+  border: 3px outset purple;
+}
+h1{
+  color: purple;
+}
+h4{
+  color: red;
+}
+p1{
+  color:gold;
+}
+p2{
+  color:#008AB7;
+}
+button{
+  font-size: 20px;
+  cursor:wait;
+  color: #000000;
+  background-color: #ececec;
+  border-radius: 3px;
+}
+button:hover{
+  color: #ececec;
+  background-color: #000000;
+  border-radius: 3px;
+}
+div{
+  display:inline-block;
+  width: 50%;
+  text-align:center;
+}
